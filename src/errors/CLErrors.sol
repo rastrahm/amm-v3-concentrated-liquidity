@@ -41,3 +41,15 @@ error FullMathOverflow();
 
 /// @notice Input insuficiente para el swap/step.
 error InsufficientInputAmount();
+
+/// @notice Resta de liquidez provoca underflow.
+error LiquidityUnderflow();
+
+/// @notice Suma de liquidez provoca overflow.
+error LiquidityOverflow();
+
+/// @notice Cast seguro fuera de rango (uint160/int128/int256).
+error SafeCastOverflow();
+
+/// @notice Precio o liquidez cero donde se requiere > 0.
+error ZeroSqrtPriceOrLiquidity();
