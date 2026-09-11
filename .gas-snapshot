@@ -1,0 +1,6 @@
+CLPoolGasTest:testGas_burn() (gas: 105080)
+CLPoolGasTest:testGas_burn_poke() (gas: 82163)
+CLPoolGasTest:testGas_collect() (gas: 122570)
+CLPoolGasTest:testGas_mint_inRange() (gas: 150355)
+CLPoolGasTest:testGas_swap_exactIn_oneForZero() (gas: 101435)
+CLPoolGasTest:testGas_swap_exactIn_zeroForOne() (gas: 77198)

@@ -1,6 +1,6 @@
 # Planificación — Módulo 14: AMM v3 Concentrated Liquidity & Tick Math
 
-**Estado:** Fases **0–6** ✅ completadas. Fase **7** pendiente de autorización.  
+**Estado:** Fases **0–7** ✅ completadas (módulo v1 cerrado).  
 **Regla de avance:** cada fase requiere **autorización explícita** del responsable antes de empezar (*“autorizo Fase N”* o equivalente).
 
 ---
@@ -326,7 +326,15 @@ error TickNotSpaced();
 
 **Criterio de salida:** deploy local reproducible + docs de seguridad/gas.
 
+**Hecho (2026-09-11):**
+- `script/Deploy.s.sol` — Factory + MockERC20 + pool + `initialize`.
+- `test/gas/CLPool.gas.t.sol` + `.gas-snapshot` (6 paths).
+- `doc/SWC-AUDIT.md` — matriz SWC-100–136, **0 vulnerables**, 4 informativos.
+- `doc/GAS.md` — baseline mint/swap/burn/poke/collect.
+- **`forge test` → 118 PASS**.
+
 ---
+
 
 ## 8. Matriz de pruebas (objetivo v1)
 
@@ -355,7 +363,7 @@ error TickNotSpaced();
 - [x] Posiciones out-of-range no acumulan fees de swaps.
 - [x] Sin floating pragma; NatSpec en APIs públicas.
 - [x] Fuzz de límites de tick.
-- [ ] (Fase 7) SWC-AUDIT + gas.
+- [x] (Fase 7) SWC-AUDIT + gas.
 
 ---
 
@@ -368,8 +376,8 @@ error TickNotSpaced();
 | `diagrama-de-clases.md` | Estructura y relaciones | ✅ |
 | `diagrama-de-flujo.md` | Flujos de decisión | ✅ |
 | `flujograma.md` | Flujos actor–sistema e2e | ✅ |
-| `SWC-AUDIT.md` | Matriz SWC (Fase 7) | ⏳ |
-| `GAS.md` | Benchmarks (Fase 7) | ⏳ |
+| `SWC-AUDIT.md` | Matriz SWC (Fase 7) | ✅ |
+| `GAS.md` | Benchmarks (Fase 7) | ✅ |
 
 ---
 
@@ -382,12 +390,12 @@ error TickNotSpaced();
 5. [x] Out-of-range → zero swap fees.
 6. [x] Fuzz MIN/MAX tick + precisión Q64.96.
 7. [x] Custom errors + NatSpec.
-8. [ ] `doc/SWC-AUDIT.md` sin vulnerabilidades en alcance v1.
+8. [x] `doc/SWC-AUDIT.md` sin vulnerabilidades en alcance v1.
 
 ---
 
 ## 12. Próximo paso
 
-**Esperando autorización de Fase 7** (Gas + Deploy + NatSpec / SWC).
+**Módulo v1 cerrado.** Extensiones opcionales (v2): NFT Position Manager, TWAP, flash swaps, Ownable2Step en factory.
 
 **Nota:** usa `~/.foundry/bin/forge` (o antepón `$HOME/.foundry/bin` al `PATH`); el `forge` de nvm/npm no es Foundry.

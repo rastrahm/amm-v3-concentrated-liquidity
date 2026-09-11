@@ -8,7 +8,9 @@
 | [diagrama-de-clases.md](./diagrama-de-clases.md) | Estructura de contratos, libs e interfaces |
 | [diagrama-de-flujo.md](./diagrama-de-flujo.md) | Flujos de decisión (mint, burn, swap, fees) |
 | [flujograma.md](./flujograma.md) | Flujos actor–sistema e2e |
+| [SWC-AUDIT.md](./SWC-AUDIT.md) | Matriz SWC-100–136 (Fase 7) |
+| [GAS.md](./GAS.md) | Baseline gas mint/swap/burn/collect |
 
 **Regla:** cada fase de implementación requiere autorización explícita antes de escribir código.
 
-**Estado actual:** Fases **0–6** ✅. Siguiente: autorizar **Fase 7**.
+**Estado actual:** Fases **0–7** ✅ (módulo v1 cerrado).
