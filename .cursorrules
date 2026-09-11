@@ -1,0 +1,30 @@
+# .cursorrules — Module 14: AMM v3 Concentrated Liquidity & Tick Math
+
+## MODULE OVERVIEW
+Focus on building a production-grade Concentrated Liquidity AMM engine (Uniswap v3 architecture) implementing range-bound liquidity provision, tick bitmap tracking, Q64.96 fixed-point math, and multi-tick step-wise swap execution using Foundry and Solidity 0.8.24.
+
+---
+
+## 1. TECHNICAL CONSTRAINTS & STACK
+
+- **Compiler Version:** Strictly `pragma solidity 0.8.24;` (no floating pragmas).
+- **Tooling:** Foundry (`forge` for unit testing, tick precision fuzzing, and gas profiling).
+- **Math Standard:** Custom fixed-point precision library (`FullMath` / `TickMath`) for $\sqrt{P}$ (Q64.96 format) calculations.
+- **Tick Bitmap:** Efficient word-based mapping (`mapping(int16 => uint256) public tickBitmap`) for $O(1)$ next-initialized-tick lookups.
+
+---
+
+## 2. CODING & SECURITY RULES
+
+- **Exact Liquidity Math:** Calculate required $token_0$ and $token_1$ amounts dynamically based on whether current price $P$ is below, inside, or above the range $[P_{lower}, P_{upper}]$.
+- **Swap Step Loops:** Execute swaps iteratively across initialized ticks, updating global fee growth variables ($feeGrowthGlobal0X128$) and shifting active liquidity $L$ as boundaries are crossed.
+- **Custom Errors:** Use explicit custom errors (`error InvalidTickRange()`, `error ZeroLiquidity()`, `error PriceTargetExceeded()`, `error FlashSlippage()`).
+- **Rounding Rules:** Always round UP on pool deposits (favoring the pool) and round DOWN on withdrawals.
+
+---
+
+## 3. TESTING REQUIREMENTS
+
+- **Foundry Unit Tests:** Test single-range deposits, multi-tick cross swaps, fee accrual within active ranges, and position burns.
+- **Out-of-Range Inactivity Tests:** Assert that positions outside the active tick range earn zero swap fees.
+- **Precision & Boundary Fuzzing:** Fuzz min/max tick limits (`MIN_TICK` / `MAX_TICK`) and verify zero precision loss in Q64.96 math.
