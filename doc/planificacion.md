@@ -1,6 +1,6 @@
 # Planificación — Módulo 14: AMM v3 Concentrated Liquidity & Tick Math
 
-**Estado:** Fases **0–2** ✅ completadas. Fases **3–7** pendientes de autorización.  
+**Estado:** Fases **0–3** ✅ completadas. Fases **4–7** pendientes de autorización.  
 **Regla de avance:** cada fase requiere **autorización explícita** del responsable antes de empezar (*“autorizo Fase N”* o equivalente).
 
 ---
@@ -158,13 +158,13 @@ error TickNotSpaced();
 | 0 | Setup Foundry + estructura + deps | ✅ Completada | ✅ Autorizada |
 | 1 | Math core: `FullMath` + `TickMath` | ✅ Completada | ✅ Autorizada |
 | 2 | `SqrtPriceMath` + `LiquidityMath` + `SwapMath` | ✅ Completada | ✅ Autorizada |
-| 3 | `TickBitmap` + `Tick` + `Position` | ⏳ Pendiente | ❌ No autorizada |
+| 3 | `TickBitmap` + `Tick` + `Position` | ✅ Completada | ✅ Autorizada |
 | 4 | `CLPool` mint / burn / collect (sin swap multi-tick) | ⏳ Pendiente | ❌ No autorizada |
 | 5 | `CLPool` swap multi-tick + fee growth | ⏳ Pendiente | ❌ No autorizada |
 | 6 | `CLFactory` + suite e2e / out-of-range / fuzz | ⏳ Pendiente | ❌ No autorizada |
 | 7 | Gas + Deploy + NatSpec / SWC hardening | ⏳ Pendiente | ❌ No autorizada |
 
-> **Próximo paso:** autorizar **Fase 3** (`TickBitmap` + `Tick` + `Position`).
+> **Próximo paso:** autorizar **Fase 4** (`CLPool` mint / burn / collect).
 
 ---
 
@@ -234,7 +234,7 @@ error TickNotSpaced();
 
 ---
 
-### Fase 3 — TickBitmap + Tick + Position
+### Fase 3 — TickBitmap + Tick + Position ✅
 
 **Objetivo:** estructuras de ticks y posiciones.
 
@@ -243,6 +243,15 @@ error TickNotSpaced();
 3. `Position.update` con fees owed según fee growth inside.
 
 **Criterio de salida:** lookups O(1) y actualización de fees por tick correctas en unit tests.
+
+**Hecho (2026-09-11):**
+- Auxiliares: `BitMath`, `FixedPoint128`.
+- `TickBitmap`: `flipTick`, `nextInitializedTickWithinOneWord` (`TickNotSpaced`).
+- `Tick` (v1 sin TWAP): `Info`, `update`, `cross`, `getFeeGrowthInside`, `clear`, `tickSpacingToMaxLiquidityPerTick`.
+- `Position`: `get` por `(owner, lower, upper)`, `update` con fees owed (`NoLiquidityPosition`).
+- Errores: `LiquidityGrossOverflow`, `NoLiquidityPosition`, `BitMathZero`.
+- Tests con harnesses de storage: bitmap lte/gt, feeGrowthInside, position fees.
+- **`forge test` → 74 PASS**.
 
 ---
 
@@ -355,6 +364,6 @@ error TickNotSpaced();
 
 ## 12. Próximo paso
 
-**Esperando autorización de Fase 3** (`TickBitmap` + `Tick` + `Position`).
+**Esperando autorización de Fase 4** (`CLPool` mint / burn / collect).
 
 **Nota:** usa `~/.foundry/bin/forge` (o antepón `$HOME/.foundry/bin` al `PATH`); el `forge` de nvm/npm no es Foundry.

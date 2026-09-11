@@ -169,8 +169,8 @@ flowchart LR
     Doc[doc/ ✅] --> F0[Fase 0 Setup ✅]
     F0 --> F1[Fase 1 FullMath/TickMath ✅]
     F1 --> F2[Fase 2 Sqrt/Liq/SwapMath ✅]
-    F2 --> F3[Fase 3 Bitmap/Tick/Position ⏳]
-    F3 --> F4[Fase 4 Mint/Burn/Collect]
+    F2 --> F3[Fase 3 Bitmap/Tick/Position ✅]
+    F3 --> F4[Fase 4 Mint/Burn/Collect ⏳]
     F4 --> F5[Fase 5 Swap multi-tick]
     F5 --> F6[Fase 6 Factory/e2e/fuzz]
     F6 --> F7[Fase 7 Gas/Deploy/SWC]
@@ -178,4 +178,4 @@ flowchart LR
 ```
 
 **Gate:** no avanzar de fase sin *“autorizo Fase N”*. Detalle en [`planificacion.md`](./planificacion.md).  
-**Estado:** Fases **0–2** ✅. Siguiente: **Fase 3**.
+**Estado:** Fases **0–3** ✅. Siguiente: **Fase 4**.
