@@ -77,3 +77,12 @@ error InsufficientToken1();
 
 /// @notice token0 debe ser address < token1.
 error InvalidTokenOrder();
+
+/// @notice Tokens identicos en createPool.
+error IdenticalAddresses();
+
+/// @notice Pool ya existe para el par + fee.
+error PoolAlreadyExists();
+
+/// @notice Caller no es el owner de la factory.
+error Unauthorized();
