@@ -1,6 +1,6 @@
 # Planificación — Módulo 14: AMM v3 Concentrated Liquidity & Tick Math
 
-**Estado:** documentación de diseño lista. Fases de código **0–7** pendientes de autorización.  
+**Estado:** Fase **0** ✅ completada. Fases **1–7** pendientes de autorización.  
 **Regla de avance:** cada fase requiere **autorización explícita** del responsable antes de empezar (*“autorizo Fase N”* o equivalente).
 
 ---
@@ -155,7 +155,7 @@ error TickNotSpaced();
 
 | Fase | Nombre | Estado | Autorización |
 |------|--------|--------|--------------|
-| 0 | Setup Foundry + estructura + deps | ⏳ Pendiente | ❌ No autorizada |
+| 0 | Setup Foundry + estructura + deps | ✅ Completada | ✅ Autorizada |
 | 1 | Math core: `FullMath` + `TickMath` | ⏳ Pendiente | ❌ No autorizada |
 | 2 | `SqrtPriceMath` + `LiquidityMath` + `SwapMath` | ⏳ Pendiente | ❌ No autorizada |
 | 3 | `TickBitmap` + `Tick` + `Position` | ⏳ Pendiente | ❌ No autorizada |
@@ -164,13 +164,13 @@ error TickNotSpaced();
 | 6 | `CLFactory` + suite e2e / out-of-range / fuzz | ⏳ Pendiente | ❌ No autorizada |
 | 7 | Gas + Deploy + NatSpec / SWC hardening | ⏳ Pendiente | ❌ No autorizada |
 
-> **Próximo paso:** autorizar **Fase 0** para scaffold Foundry.
+> **Próximo paso:** autorizar **Fase 1** (`FullMath` + `TickMath`).
 
 ---
 
 ## 7. Detalle por fase
 
-### Fase 0 — Setup Foundry
+### Fase 0 — Setup Foundry ✅
 
 **Objetivo:** repo compilable con tooling de la suite.
 
@@ -180,6 +180,16 @@ error TickNotSpaced();
 4. Stub mínimo + smoke test; `.env.example`.
 
 **Criterio de salida:** `forge build` y `forge test` en verde.
+
+**Hecho (2026-09-11):**
+- `foundry.toml` (solc `0.8.24`, Cancun, optimizer `10_000`, `via_ir`, fuzz `runs = 1000`, `[rpc_endpoints].mainnet`).
+- `remappings.txt`: `forge-std/`, `@openzeppelin/contracts/`.
+- Dependencias en `lib/` (gitignored, `--no-git --shallow`): `forge-std`, OpenZeppelin **v5.2.0**.
+- Carpetas `src/{interfaces,libraries,errors,mocks}`, `test/{helpers,fuzz,gas,libraries}`, `script/`.
+- Stub `src/Placeholder.sol` + `test/Placeholder.t.sol` (ping + remapping IERC20).
+- Stub `script/Deploy.s.sol` (Fase 7), `.env.example`, `README.md`.
+- `forge build` OK; `forge test` → **3 PASS**.
+- Nota: usar `~/.foundry/bin/forge` (el `forge` de nvm/npm no es Foundry).
 
 ---
 
@@ -328,6 +338,6 @@ error TickNotSpaced();
 
 ## 12. Próximo paso
 
-**Esperando autorización de Fase 0** (setup Foundry).
+**Esperando autorización de Fase 1** (`FullMath` + `TickMath`).
 
-Tras tu OK, se crea el scaffold compilable sin implementar aún la matemática del pool.
+**Nota:** usa `~/.foundry/bin/forge` (o antepón `$HOME/.foundry/bin` al `PATH`); el `forge` de nvm/npm no es Foundry.
