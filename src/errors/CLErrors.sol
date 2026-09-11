@@ -53,3 +53,12 @@ error SafeCastOverflow();
 
 /// @notice Precio o liquidez cero donde se requiere > 0.
 error ZeroSqrtPriceOrLiquidity();
+
+/// @notice Liquidez bruta del tick excede el maximo por tick.
+error LiquidityGrossOverflow();
+
+/// @notice Poke de fees en posicion con liquidez cero.
+error NoLiquidityPosition();
+
+/// @notice BitMath llamado con x == 0.
+error BitMathZero();
