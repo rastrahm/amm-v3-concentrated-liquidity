@@ -166,8 +166,8 @@ sequenceDiagram
 
 ```mermaid
 flowchart LR
-    Doc[doc/ ✅] --> F0[Fase 0 Setup ⏳]
-    F0 --> F1[Fase 1 FullMath/TickMath]
+    Doc[doc/ ✅] --> F0[Fase 0 Setup ✅]
+    F0 --> F1[Fase 1 FullMath/TickMath ⏳]
     F1 --> F2[Fase 2 Sqrt/Liq/SwapMath]
     F2 --> F3[Fase 3 Bitmap/Tick/Position]
     F3 --> F4[Fase 4 Mint/Burn/Collect]
@@ -177,4 +177,5 @@ flowchart LR
     F7 --> Done([Módulo v1])
 ```
 
-**Gate:** no avanzar de fase sin *“autorizo Fase N”*. Detalle en [`planificacion.md`](./planificacion.md).
+**Gate:** no avanzar de fase sin *“autorizo Fase N”*. Detalle en [`planificacion.md`](./planificacion.md).  
+**Estado:** Fase **0** ✅. Siguiente: **Fase 1**.
