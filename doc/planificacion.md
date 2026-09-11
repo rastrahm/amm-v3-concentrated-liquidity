@@ -1,6 +1,6 @@
 # Planificación — Módulo 14: AMM v3 Concentrated Liquidity & Tick Math
 
-**Estado:** Fase **0** ✅ completada. Fases **1–7** pendientes de autorización.  
+**Estado:** Fases **0–1** ✅ completadas. Fases **2–7** pendientes de autorización.  
 **Regla de avance:** cada fase requiere **autorización explícita** del responsable antes de empezar (*“autorizo Fase N”* o equivalente).
 
 ---
@@ -156,7 +156,7 @@ error TickNotSpaced();
 | Fase | Nombre | Estado | Autorización |
 |------|--------|--------|--------------|
 | 0 | Setup Foundry + estructura + deps | ✅ Completada | ✅ Autorizada |
-| 1 | Math core: `FullMath` + `TickMath` | ⏳ Pendiente | ❌ No autorizada |
+| 1 | Math core: `FullMath` + `TickMath` | ✅ Completada | ✅ Autorizada |
 | 2 | `SqrtPriceMath` + `LiquidityMath` + `SwapMath` | ⏳ Pendiente | ❌ No autorizada |
 | 3 | `TickBitmap` + `Tick` + `Position` | ⏳ Pendiente | ❌ No autorizada |
 | 4 | `CLPool` mint / burn / collect (sin swap multi-tick) | ⏳ Pendiente | ❌ No autorizada |
@@ -164,7 +164,7 @@ error TickNotSpaced();
 | 6 | `CLFactory` + suite e2e / out-of-range / fuzz | ⏳ Pendiente | ❌ No autorizada |
 | 7 | Gas + Deploy + NatSpec / SWC hardening | ⏳ Pendiente | ❌ No autorizada |
 
-> **Próximo paso:** autorizar **Fase 1** (`FullMath` + `TickMath`).
+> **Próximo paso:** autorizar **Fase 2** (`SqrtPriceMath` + `LiquidityMath` + `SwapMath`).
 
 ---
 
@@ -193,7 +193,7 @@ error TickNotSpaced();
 
 ---
 
-### Fase 1 — FullMath + TickMath
+### Fase 1 — FullMath + TickMath ✅
 
 **Objetivo:** base matemática Q64.96 y conversión tick ↔ $\sqrt{P}$.
 
@@ -202,6 +202,14 @@ error TickNotSpaced();
 3. Fuzz de ida-vuelta tick → sqrt → tick (sin pérdida de precisión fuera de documentación Uniswap).
 
 **Criterio de salida:** libs en verde; fuzz de límites de tick OK.
+
+**Hecho (2026-09-11):**
+- `src/errors/CLErrors.sol`: errores del modulo + `DenominatorZero`, `FullMathOverflow`, `InvalidTick`, `InvalidSqrtPrice`.
+- `src/libraries/FullMath.sol`: `mulDiv` / `mulDivRoundingUp` (512-bit, Remco Bloemen / Uniswap v3 0.8).
+- `src/libraries/TickMath.sol`: `MIN/MAX_TICK`, `MIN/MAX_SQRT_RATIO`, `getSqrtRatioAtTick`, `getTickAtSqrtRatio`.
+- Tests: `test/libraries/FullMath.t.sol`, `test/libraries/TickMath.t.sol`, `test/fuzz/TickMath.fuzz.t.sol`.
+- Stub `Placeholder` eliminado.
+- **`forge test` → 25 PASS** (incl. fuzz 1000 runs).
 
 ---
 
@@ -304,7 +312,7 @@ error TickNotSpaced();
 - [ ] `sqrtPriceLimitX96` respetado (`PriceTargetExceeded` si aplica).
 - [ ] Posiciones out-of-range no acumulan fees de swaps.
 - [ ] Sin floating pragma; NatSpec en APIs públicas.
-- [ ] Fuzz de límites de tick.
+- [x] Fuzz de límites de tick.
 - [ ] (Fase 7) SWC-AUDIT + gas.
 
 ---
@@ -338,6 +346,6 @@ error TickNotSpaced();
 
 ## 12. Próximo paso
 
-**Esperando autorización de Fase 1** (`FullMath` + `TickMath`).
+**Esperando autorización de Fase 2** (`SqrtPriceMath` + `LiquidityMath` + `SwapMath`).
 
 **Nota:** usa `~/.foundry/bin/forge` (o antepón `$HOME/.foundry/bin` al `PATH`); el `forge` de nvm/npm no es Foundry.

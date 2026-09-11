@@ -11,4 +11,4 @@
 
 **Regla:** cada fase de implementación requiere autorización explícita antes de escribir código.
 
-**Estado actual:** Fase **0** ✅ (Foundry + deps). Siguiente: autorizar **Fase 1**.
+**Estado actual:** Fases **0–1** ✅. Siguiente: autorizar **Fase 2**.
