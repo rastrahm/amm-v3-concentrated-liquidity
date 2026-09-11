@@ -11,29 +11,33 @@ import {
     InvalidTickRange,
     InvalidTokenOrder,
     Locked,
+    PriceTargetExceeded,
     TickNotSpaced,
     ZeroAddress,
     ZeroLiquidity
 } from "./errors/CLErrors.sol";
 import {ICLMintCallback} from "./interfaces/ICLMintCallback.sol";
 import {ICLPool} from "./interfaces/ICLPool.sol";
+import {ICLSwapCallback} from "./interfaces/ICLSwapCallback.sol";
+import {FixedPoint128} from "./libraries/FixedPoint128.sol";
+import {FullMath} from "./libraries/FullMath.sol";
 import {LiquidityMath} from "./libraries/LiquidityMath.sol";
 import {Position} from "./libraries/Position.sol";
 import {SafeCast} from "./libraries/SafeCast.sol";
 import {SqrtPriceMath} from "./libraries/SqrtPriceMath.sol";
+import {SwapMath} from "./libraries/SwapMath.sol";
 import {Tick} from "./libraries/Tick.sol";
 import {TickBitmap} from "./libraries/TickBitmap.sol";
 import {TickMath} from "./libraries/TickMath.sol";
 
 /**
  * @title CLPool
- * @notice Pool de liquidez concentrada: initialize / mint / burn / collect (swap en Fase 5).
- * @dev Adaptado de Uniswap v3-core (sin oracle/TWAP). CEI + SafeERC20 + lock.
+ * @notice Pool de liquidez concentrada: initialize / mint / burn / collect / swap.
+ * @dev Adaptado de Uniswap v3-core (sin oracle/TWAP ni protocol fee). CEI + SafeERC20 + lock.
  */
 contract CLPool is ICLPool {
     using SafeERC20 for IERC20;
     using SafeCast for uint256;
-    using SafeCast for int256;
     using Tick for mapping(int24 => Tick.Info);
     using TickBitmap for mapping(int16 => uint256);
     using Position for mapping(bytes32 => Position.Info);
@@ -99,12 +103,41 @@ contract CLPool is ICLPool {
         uint128 amount0,
         uint128 amount1
     );
+    /// @notice Swap ejecutado.
+    event Swap(
+        address indexed sender,
+        address indexed recipient,
+        int256 amount0,
+        int256 amount1,
+        uint160 sqrtPriceX96,
+        uint128 liquidity,
+        int24 tick
+    );
 
     struct ModifyPositionParams {
         address owner;
         int24 tickLower;
         int24 tickUpper;
         int128 liquidityDelta;
+    }
+
+    struct SwapState {
+        int256 amountSpecifiedRemaining;
+        int256 amountCalculated;
+        uint160 sqrtPriceX96;
+        int24 tick;
+        uint256 feeGrowthGlobalX128;
+        uint128 liquidity;
+    }
+
+    struct StepComputations {
+        uint160 sqrtPriceStartX96;
+        int24 tickNext;
+        bool initialized;
+        uint160 sqrtPriceNextX96;
+        uint256 amountIn;
+        uint256 amountOut;
+        uint256 feeAmount;
     }
 
     /**
@@ -185,14 +218,13 @@ contract CLPool is ICLPool {
         lock
         returns (uint256 amount0, uint256 amount1)
     {
-        if (amount == 0) revert ZeroLiquidity();
-
+        // amount == 0 permitido: poke de fees
         (Position.Info storage position, int256 amount0Int, int256 amount1Int) = _modifyPosition(
             ModifyPositionParams({
                 owner: msg.sender,
                 tickLower: tickLower,
                 tickUpper: tickUpper,
-                liquidityDelta: SafeCast.toInt128(-int256(uint256(amount)))
+                liquidityDelta: amount == 0 ? int128(0) : SafeCast.toInt128(-int256(uint256(amount)))
             })
         );
 
@@ -230,6 +262,138 @@ contract CLPool is ICLPool {
         }
 
         emit Collect(msg.sender, recipient, tickLower, tickUpper, amount0, amount1);
+    }
+
+    /// @inheritdoc ICLPool
+    function swap(
+        address recipient,
+        bool zeroForOne,
+        int256 amountSpecified,
+        uint160 sqrtPriceLimitX96,
+        bytes calldata data
+    ) external override lock returns (int256 amount0, int256 amount1) {
+        if (amountSpecified == 0) revert ZeroLiquidity();
+
+        Slot0 memory slot0Start = slot0;
+
+        if (
+            !(
+                zeroForOne
+                    ? sqrtPriceLimitX96 < slot0Start.sqrtPriceX96 && sqrtPriceLimitX96 > TickMath.MIN_SQRT_RATIO
+                    : sqrtPriceLimitX96 > slot0Start.sqrtPriceX96 && sqrtPriceLimitX96 < TickMath.MAX_SQRT_RATIO
+            )
+        ) {
+            revert PriceTargetExceeded();
+        }
+
+        bool exactInput = amountSpecified > 0;
+
+        SwapState memory state = SwapState({
+            amountSpecifiedRemaining: amountSpecified,
+            amountCalculated: 0,
+            sqrtPriceX96: slot0Start.sqrtPriceX96,
+            tick: slot0Start.tick,
+            feeGrowthGlobalX128: zeroForOne ? feeGrowthGlobal0X128 : feeGrowthGlobal1X128,
+            liquidity: liquidity
+        });
+
+        while (state.amountSpecifiedRemaining != 0 && state.sqrtPriceX96 != sqrtPriceLimitX96) {
+            StepComputations memory step;
+            step.sqrtPriceStartX96 = state.sqrtPriceX96;
+
+            (step.tickNext, step.initialized) =
+                tickBitmap.nextInitializedTickWithinOneWord(state.tick, tickSpacing, zeroForOne);
+
+            if (step.tickNext < TickMath.MIN_TICK) {
+                step.tickNext = TickMath.MIN_TICK;
+            } else if (step.tickNext > TickMath.MAX_TICK) {
+                step.tickNext = TickMath.MAX_TICK;
+            }
+
+            step.sqrtPriceNextX96 = TickMath.getSqrtRatioAtTick(step.tickNext);
+
+            (state.sqrtPriceX96, step.amountIn, step.amountOut, step.feeAmount) = SwapMath.computeSwapStep(
+                state.sqrtPriceX96,
+                (
+                    zeroForOne
+                        ? step.sqrtPriceNextX96 < sqrtPriceLimitX96
+                        : step.sqrtPriceNextX96 > sqrtPriceLimitX96
+                )
+                    ? sqrtPriceLimitX96
+                    : step.sqrtPriceNextX96,
+                state.liquidity,
+                state.amountSpecifiedRemaining,
+                fee
+            );
+
+            if (exactInput) {
+                unchecked {
+                    state.amountSpecifiedRemaining -= SafeCast.toInt256(step.amountIn + step.feeAmount);
+                }
+                state.amountCalculated -= SafeCast.toInt256(step.amountOut);
+            } else {
+                unchecked {
+                    state.amountSpecifiedRemaining += SafeCast.toInt256(step.amountOut);
+                }
+                state.amountCalculated += SafeCast.toInt256(step.amountIn + step.feeAmount);
+            }
+
+            if (state.liquidity > 0) {
+                unchecked {
+                    state.feeGrowthGlobalX128 +=
+                        FullMath.mulDiv(step.feeAmount, FixedPoint128.Q128, state.liquidity);
+                }
+            }
+
+            if (state.sqrtPriceX96 == step.sqrtPriceNextX96) {
+                if (step.initialized) {
+                    int128 liquidityNet = ticks.cross(
+                        step.tickNext,
+                        zeroForOne ? state.feeGrowthGlobalX128 : feeGrowthGlobal0X128,
+                        zeroForOne ? feeGrowthGlobal1X128 : state.feeGrowthGlobalX128
+                    );
+                    unchecked {
+                        if (zeroForOne) liquidityNet = -liquidityNet;
+                    }
+                    state.liquidity = LiquidityMath.addDelta(state.liquidity, liquidityNet);
+                }
+                unchecked {
+                    state.tick = zeroForOne ? step.tickNext - 1 : step.tickNext;
+                }
+            } else if (state.sqrtPriceX96 != step.sqrtPriceStartX96) {
+                state.tick = TickMath.getTickAtSqrtRatio(state.sqrtPriceX96);
+            }
+        }
+
+        slot0.sqrtPriceX96 = state.sqrtPriceX96;
+        slot0.tick = state.tick;
+        if (liquidity != state.liquidity) liquidity = state.liquidity;
+
+        if (zeroForOne) {
+            feeGrowthGlobal0X128 = state.feeGrowthGlobalX128;
+        } else {
+            feeGrowthGlobal1X128 = state.feeGrowthGlobalX128;
+        }
+
+        unchecked {
+            (amount0, amount1) = zeroForOne == exactInput
+                ? (amountSpecified - state.amountSpecifiedRemaining, state.amountCalculated)
+                : (state.amountCalculated, amountSpecified - state.amountSpecifiedRemaining);
+        }
+
+        if (zeroForOne) {
+            if (amount1 < 0) IERC20(token1).safeTransfer(recipient, uint256(-amount1));
+            uint256 balance0Before = _balance0();
+            ICLSwapCallback(msg.sender).clSwapCallback(amount0, amount1, data);
+            if (balance0Before + uint256(amount0) > _balance0()) revert InsufficientToken0();
+        } else {
+            if (amount0 < 0) IERC20(token0).safeTransfer(recipient, uint256(-amount0));
+            uint256 balance1Before = _balance1();
+            ICLSwapCallback(msg.sender).clSwapCallback(amount0, amount1, data);
+            if (balance1Before + uint256(amount1) > _balance1()) revert InsufficientToken1();
+        }
+
+        emit Swap(msg.sender, recipient, amount0, amount1, state.sqrtPriceX96, state.liquidity, state.tick);
     }
 
     /**

@@ -166,10 +166,13 @@ contract CLPoolMintTest is Test {
         assertEq(posLiq, LIQ / 2);
     }
 
-    function test_Burn_RevertsZeroLiquidity() public {
-        vm.prank(lp);
-        vm.expectRevert(ZeroLiquidity.selector);
+    function test_Burn_Zero_IsPoke() public {
+        vm.startPrank(lp);
+        router.mint(lp, lower, upper, LIQ);
+        // burn(0) acredita fees (0 si no hubo swaps) sin cambiar L
         pool.burn(lower, upper, 0);
+        vm.stopPrank();
+        assertEq(pool.liquidity(), LIQ);
     }
 
     function test_Mint_RoundUp_Burn_RoundDown_FavorsPool() public {
