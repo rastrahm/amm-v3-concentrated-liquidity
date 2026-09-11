@@ -73,4 +73,22 @@ interface ICLPool {
         uint128 amount0Requested,
         uint128 amount1Requested
     ) external returns (uint128 amount0, uint128 amount1);
+
+    /**
+     * @notice Ejecuta un swap zeroForOne o oneForZero (exact in si amountSpecified > 0).
+     * @param recipient Destinatario del token de output.
+     * @param zeroForOne true = token0 → token1 (precio baja).
+     * @param amountSpecified >0 exact input; <0 exact output.
+     * @param sqrtPriceLimitX96 Limite de precio Q64.96.
+     * @param data Datos para el callback de pago.
+     * @return amount0 Delta token0 (+ pool recibe / - pool envia).
+     * @return amount1 Delta token1.
+     */
+    function swap(
+        address recipient,
+        bool zeroForOne,
+        int256 amountSpecified,
+        uint160 sqrtPriceLimitX96,
+        bytes calldata data
+    ) external returns (int256 amount0, int256 amount1);
 }

@@ -2,7 +2,7 @@
 
 Motor de liquidez concentrada (arquitectura Uniswap v3): rangos de ticks, Q64.96, tick bitmap y swaps multi-tick. Solidity `0.8.24` + Foundry.
 
-**Estado:** Fases **0–4** ✅ (pool mint/burn/collect). Fases **5–7** pendientes de autorización.
+**Estado:** Fases **0–5** ✅ (swap multi-tick). Fases **6–7** pendientes de autorización.
 
 ## Docs
 
@@ -20,4 +20,4 @@ forge test
 
 ## Próximo paso
 
-Autorizar **Fase 5** (swap multi-tick + fee growth).
+Autorizar **Fase 6** (`CLFactory` + e2e / out-of-range / fuzz).

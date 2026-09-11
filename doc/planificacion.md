@@ -1,6 +1,6 @@
 # Planificación — Módulo 14: AMM v3 Concentrated Liquidity & Tick Math
 
-**Estado:** Fases **0–4** ✅ completadas. Fases **5–7** pendientes de autorización.  
+**Estado:** Fases **0–5** ✅ completadas. Fases **6–7** pendientes de autorización.  
 **Regla de avance:** cada fase requiere **autorización explícita** del responsable antes de empezar (*“autorizo Fase N”* o equivalente).
 
 ---
@@ -160,11 +160,11 @@ error TickNotSpaced();
 | 2 | `SqrtPriceMath` + `LiquidityMath` + `SwapMath` | ✅ Completada | ✅ Autorizada |
 | 3 | `TickBitmap` + `Tick` + `Position` | ✅ Completada | ✅ Autorizada |
 | 4 | `CLPool` mint / burn / collect (sin swap multi-tick) | ✅ Completada | ✅ Autorizada |
-| 5 | `CLPool` swap multi-tick + fee growth | ⏳ Pendiente | ❌ No autorizada |
+| 5 | `CLPool` swap multi-tick + fee growth | ✅ Completada | ✅ Autorizada |
 | 6 | `CLFactory` + suite e2e / out-of-range / fuzz | ⏳ Pendiente | ❌ No autorizada |
 | 7 | Gas + Deploy + NatSpec / SWC hardening | ⏳ Pendiente | ❌ No autorizada |
 
-> **Próximo paso:** autorizar **Fase 5** (swap multi-tick + fee growth).
+> **Próximo paso:** autorizar **Fase 6** (`CLFactory` + e2e / out-of-range / fuzz).
 
 ---
 
@@ -276,7 +276,7 @@ error TickNotSpaced();
 
 ---
 
-### Fase 5 — Swap multi-tick + fee growth
+### Fase 5 — Swap multi-tick + fee growth ✅
 
 **Objetivo:** motor de swap iterativo.
 
@@ -285,6 +285,14 @@ error TickNotSpaced();
 3. Al cruzar tick: `Tick.cross` y ajustar L con `liquidityNet`.
 
 **Criterio de salida:** multi-tick swaps + accrual de fees en rango activo.
+
+**Hecho (2026-09-11):**
+- `ICLSwapCallback` + `CLPool.swap` (exact in/out, sin protocol fee / oracle).
+- Step loop: bitmap → SwapMath → feeGrowthGlobal → cross + LiquidityMath.
+- `burn(0)` habilitado como poke de fees.
+- `PriceTargetExceeded` en limites invalidos; output via SafeERC20 + callback de pago.
+- Tests: `CLPool.swap.t.sol` + `CLSwapRouter` (1-tick, multi-tick, fees, limit).
+- **`forge test` → 95 PASS**.
 
 ---
 
@@ -336,7 +344,7 @@ error TickNotSpaced();
 - [x] Custom errors del módulo.
 - [x] Redondeo UP depósitos / DOWN retiros.
 - [x] Ticks validados: lower < upper, spacing, límites.
-- [ ] `sqrtPriceLimitX96` respetado (`PriceTargetExceeded` si aplica).
+- [x] `sqrtPriceLimitX96` respetado (`PriceTargetExceeded` si aplica).
 - [ ] Posiciones out-of-range no acumulan fees de swaps.
 - [x] Sin floating pragma; NatSpec en APIs públicas.
 - [x] Fuzz de límites de tick.
@@ -362,7 +370,7 @@ error TickNotSpaced();
 
 1. [x] Compila con `pragma solidity 0.8.24`.
 2. [x] Mint/burn con math de rango (below/inside/above).
-3. [ ] Swap multi-tick con actualización de L y fee growth.
+3. [x] Swap multi-tick con actualización de L y fee growth.
 4. [x] Tick bitmap con next-initialized O(1) por word.
 5. [ ] Out-of-range → zero swap fees.
 6. [x] Fuzz MIN/MAX tick + precisión Q64.96.
@@ -373,6 +381,6 @@ error TickNotSpaced();
 
 ## 12. Próximo paso
 
-**Esperando autorización de Fase 5** (swap multi-tick + fee growth).
+**Esperando autorización de Fase 6** (`CLFactory` + e2e / out-of-range / fuzz).
 
 **Nota:** usa `~/.foundry/bin/forge` (o antepón `$HOME/.foundry/bin` al `PATH`); el `forge` de nvm/npm no es Foundry.
