@@ -173,9 +173,9 @@ flowchart LR
     F3 --> F4[Fase 4 Mint/Burn/Collect ✅]
     F4 --> F5[Fase 5 Swap multi-tick ✅]
     F5 --> F6[Fase 6 Factory/e2e/fuzz ✅]
-    F6 --> F7[Fase 7 Gas/Deploy/SWC ⏳]
-    F7 --> Done([Módulo v1])
+    F6 --> F7[Fase 7 Gas/Deploy/SWC ✅]
+    F7 --> Done([Módulo v1 cerrado ✅])
 ```
 
 **Gate:** no avanzar de fase sin *“autorizo Fase N”*. Detalle en [`planificacion.md`](./planificacion.md).  
-**Estado:** Fases **0–6** ✅. Siguiente: **Fase 7**.
+**Estado:** Fases **0–7** ✅ (módulo v1 cerrado).

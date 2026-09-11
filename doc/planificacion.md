@@ -162,9 +162,9 @@ error TickNotSpaced();
 | 4 | `CLPool` mint / burn / collect (sin swap multi-tick) | ✅ Completada | ✅ Autorizada |
 | 5 | `CLPool` swap multi-tick + fee growth | ✅ Completada | ✅ Autorizada |
 | 6 | `CLFactory` + suite e2e / out-of-range / fuzz | ✅ Completada | ✅ Autorizada |
-| 7 | Gas + Deploy + NatSpec / SWC hardening | ⏳ Pendiente | ❌ No autorizada |
+| 7 | Gas + Deploy + NatSpec / SWC hardening | ✅ Completada | ✅ Autorizada |
 
-> **Próximo paso:** autorizar **Fase 7** (Gas + Deploy + SWC).
+> **Módulo v1 cerrado** (fases 0–7). Extensiones opcionales → v2.
 
 ---
 
@@ -318,7 +318,7 @@ error TickNotSpaced();
 
 ---
 
-### Fase 7 — Gas + Deploy + hardening
+### Fase 7 — Gas + Deploy + hardening ✅
 
 1. `script/Deploy.s.sol` (factory + pool demo + mocks).
 2. `test/gas/CLPool.gas.t.sol` + `.gas-snapshot`.
