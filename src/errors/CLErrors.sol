@@ -62,3 +62,18 @@ error NoLiquidityPosition();
 
 /// @notice BitMath llamado con x == 0.
 error BitMathZero();
+
+/// @notice Pool ya inicializado.
+error AlreadyInitialized();
+
+/// @notice Reentrancy / lock del pool.
+error Locked();
+
+/// @notice Callback de mint no pago suficiente token0.
+error InsufficientToken0();
+
+/// @notice Callback de mint no pago suficiente token1.
+error InsufficientToken1();
+
+/// @notice token0 debe ser address < token1.
+error InvalidTokenOrder();

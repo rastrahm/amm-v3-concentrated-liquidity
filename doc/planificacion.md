@@ -1,6 +1,6 @@
 # Planificación — Módulo 14: AMM v3 Concentrated Liquidity & Tick Math
 
-**Estado:** Fases **0–3** ✅ completadas. Fases **4–7** pendientes de autorización.  
+**Estado:** Fases **0–4** ✅ completadas. Fases **5–7** pendientes de autorización.  
 **Regla de avance:** cada fase requiere **autorización explícita** del responsable antes de empezar (*“autorizo Fase N”* o equivalente).
 
 ---
@@ -159,12 +159,12 @@ error TickNotSpaced();
 | 1 | Math core: `FullMath` + `TickMath` | ✅ Completada | ✅ Autorizada |
 | 2 | `SqrtPriceMath` + `LiquidityMath` + `SwapMath` | ✅ Completada | ✅ Autorizada |
 | 3 | `TickBitmap` + `Tick` + `Position` | ✅ Completada | ✅ Autorizada |
-| 4 | `CLPool` mint / burn / collect (sin swap multi-tick) | ⏳ Pendiente | ❌ No autorizada |
+| 4 | `CLPool` mint / burn / collect (sin swap multi-tick) | ✅ Completada | ✅ Autorizada |
 | 5 | `CLPool` swap multi-tick + fee growth | ⏳ Pendiente | ❌ No autorizada |
 | 6 | `CLFactory` + suite e2e / out-of-range / fuzz | ⏳ Pendiente | ❌ No autorizada |
 | 7 | Gas + Deploy + NatSpec / SWC hardening | ⏳ Pendiente | ❌ No autorizada |
 
-> **Próximo paso:** autorizar **Fase 4** (`CLPool` mint / burn / collect).
+> **Próximo paso:** autorizar **Fase 5** (swap multi-tick + fee growth).
 
 ---
 
@@ -255,7 +255,7 @@ error TickNotSpaced();
 
 ---
 
-### Fase 4 — CLPool mint / burn / collect
+### Fase 4 — CLPool mint / burn / collect ✅
 
 **Objetivo:** provisión y retiro de liquidez en rango (precio fijo / sin cruzar ticks en swap).
 
@@ -264,6 +264,15 @@ error TickNotSpaced();
 3. Actualizar ticks + bitmap + posición; transferir tokens (CEI + SafeERC20).
 
 **Criterio de salida:** depósitos/retiros single-range en verde; redondeo a favor del pool.
+
+**Hecho (2026-09-11):**
+- `ICLPool`, `ICLMintCallback`, `MockERC20`, `CLPool` (initialize / mint / burn / collect + lock).
+- Mint via callback `clMintCallback`; pago verificado por balance.
+- Amounts below / inside / above rango; L global solo si P inside.
+- Burn acredita `tokensOwed`; collect con SafeERC20.
+- Errores: `AlreadyInitialized`, `Locked`, `InsufficientToken0/1`, `InvalidTokenOrder`.
+- Tests: `test/CLPool.mint.t.sol` + `test/helpers/CLMintRouter.sol`.
+- **`forge test` → 86 PASS**.
 
 ---
 
@@ -322,14 +331,14 @@ error TickNotSpaced();
 
 ## 9. Seguridad (checklist vivo)
 
-- [ ] CEI en mint / burn / swap / collect.
-- [ ] SafeERC20; sin `transfer`/`send` de ETH crudo.
-- [ ] Custom errors del módulo.
+- [x] CEI en mint / burn / swap / collect.
+- [x] SafeERC20; sin `transfer`/`send` de ETH crudo.
+- [x] Custom errors del módulo.
 - [x] Redondeo UP depósitos / DOWN retiros.
-- [ ] Ticks validados: lower < upper, spacing, límites.
+- [x] Ticks validados: lower < upper, spacing, límites.
 - [ ] `sqrtPriceLimitX96` respetado (`PriceTargetExceeded` si aplica).
 - [ ] Posiciones out-of-range no acumulan fees de swaps.
-- [ ] Sin floating pragma; NatSpec en APIs públicas.
+- [x] Sin floating pragma; NatSpec en APIs públicas.
 - [x] Fuzz de límites de tick.
 - [ ] (Fase 7) SWC-AUDIT + gas.
 
@@ -351,19 +360,19 @@ error TickNotSpaced();
 
 ## 11. Criterios de aceptación del módulo
 
-1. [ ] Compila con `pragma solidity 0.8.24`.
-2. [ ] Mint/burn con math de rango (below/inside/above).
+1. [x] Compila con `pragma solidity 0.8.24`.
+2. [x] Mint/burn con math de rango (below/inside/above).
 3. [ ] Swap multi-tick con actualización de L y fee growth.
-4. [ ] Tick bitmap con next-initialized O(1) por word.
+4. [x] Tick bitmap con next-initialized O(1) por word.
 5. [ ] Out-of-range → zero swap fees.
-6. [ ] Fuzz MIN/MAX tick + precisión Q64.96.
-7. [ ] Custom errors + NatSpec.
+6. [x] Fuzz MIN/MAX tick + precisión Q64.96.
+7. [x] Custom errors + NatSpec.
 8. [ ] `doc/SWC-AUDIT.md` sin vulnerabilidades en alcance v1.
 
 ---
 
 ## 12. Próximo paso
 
-**Esperando autorización de Fase 4** (`CLPool` mint / burn / collect).
+**Esperando autorización de Fase 5** (swap multi-tick + fee growth).
 
 **Nota:** usa `~/.foundry/bin/forge` (o antepón `$HOME/.foundry/bin` al `PATH`); el `forge` de nvm/npm no es Foundry.
