@@ -2,11 +2,11 @@
 
 Motor de liquidez concentrada (arquitectura Uniswap v3): rangos de ticks, Q64.96, tick bitmap y swaps multi-tick. Solidity `0.8.24` + Foundry.
 
-**Estado:** Fases **0–6** ✅. Fase **7** pendiente de autorización.
+**Estado:** Fases **0–7** ✅ (módulo cerrado en alcance v1).
 
 ## Docs
 
-Ver [`doc/`](./doc/README.md) — planificación, diagramas y flujogramas.
+Ver [`doc/`](./doc/README.md) — planificación, diagramas, SWC-AUDIT y gas.
 
 ## Tooling
 
@@ -16,8 +16,14 @@ export PATH="$HOME/.foundry/bin:$PATH"
 
 forge build
 forge test
+forge snapshot --match-contract CLPoolGasTest
 ```
 
-## Próximo paso
+## Deploy local
 
-Autorizar **Fase 7** (Gas + Deploy + SWC).
+```bash
+anvil   # otra terminal
+forge script script/Deploy.s.sol:Deploy --rpc-url http://127.0.0.1:8545 --broadcast
+```
+
+Env: ver `.env.example` (`PRIVATE_KEY`, `FEE`, `INIT_TICK`).
