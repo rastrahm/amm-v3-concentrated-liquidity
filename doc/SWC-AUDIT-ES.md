@@ -17,8 +17,8 @@ OpenZeppelin Contracts v5.2.0 (`IERC20`, `SafeERC20`)
 **Fecha:** 2026-09-11  
 **Referencia tests:** `test/CLPool.*.t.sol`, `test/CLFactory.t.sol`, `test/OutOfRangeFees.t.sol`,  
 `test/fuzz/`, `test/gas/`, `test/libraries/`  
-**Estilo:** alineado a [`13-decentralized-oracles/doc/SWC-AUDIT.md`](../../13-decentralized-oracles/doc/SWC-AUDIT.md)  
-**Índice docs:** [`README.md`](./README.md) · README módulo: [`../README.md`](../README.md)
+**Estilo:** alineado a [`13-decentralized-oracles/doc/SWC-AUDIT-ES.md`](../../13-decentralized-oracles/doc/SWC-AUDIT-ES.md)  
+**Índice docs:** [`README-ES.md`](./README-ES.md) · README módulo: [`../README-ES.md`](../README-ES.md)
 
 ---
 
@@ -129,7 +129,7 @@ Error declarado en `CLErrors` / `.cursorrules` para compatibilidad; flash swaps 
 | Out-of-range fees = 0 | ✅ | `OutOfRangeFees.t.sol` |
 | Sin floating pragma | ✅ | `0.8.24` |
 | Sin ETH `transfer`/`send` | ✅ | N/A core |
-| Gas profiling mint/swap/burn | ✅ | `doc/GAS.md` |
+| Gas profiling mint/swap/burn | ✅ | `doc/GAS-ES.md` |
 
 ---
 
@@ -152,7 +152,7 @@ Error declarado en `CLErrors` / `.cursorrules` para compatibilidad; flash swaps 
 |---|--------|--------|
 | 1 | `script/Deploy.s.sol` | Deploy reproducible local (factory + mocks + pool + initialize) |
 | 2 | `test/gas/CLPool.gas.t.sol` + `.gas-snapshot` | Baseline mint/swap/burn/poke/collect |
-| 3 | `doc/SWC-AUDIT.md` / `doc/GAS.md` | Matriz SWC-100–136 + benchmarks |
+| 3 | `doc/SWC-AUDIT-ES.md` / `doc/GAS-ES.md` | Matriz SWC-100–136 + benchmarks |
 | 4 | README / planificacion | Cierre módulo Fase 7 |
 
 ### Observaciones no bloqueantes (v2)
@@ -213,6 +213,8 @@ Total: 118 PASS / 0 FAIL / 0 SKIP
 - [SWC Registry](https://swcregistry.io/)
 - [EIP-1470](https://eips.ethereum.org/EIPS/eip-1470)
 - [Uniswap v3 Core](https://github.com/Uniswap/v3-core)
-- Módulo 13: [`13-decentralized-oracles/doc/SWC-AUDIT.md`](../../13-decentralized-oracles/doc/SWC-AUDIT.md)
-- Gas: [`GAS.md`](./GAS.md)
-- Plan: [`planificacion.md`](./planificacion.md)
+- Módulo 13: [`13-decentralized-oracles/doc/SWC-AUDIT-ES.md`](../../13-decentralized-oracles/doc/SWC-AUDIT-ES.md)
+- Gas: [`GAS-ES.md`](./GAS-ES.md)
+- Plan: [`planificacion-ES.md`](./planificacion-ES.md)
+
+English version: [`SWC-AUDIT-EN.md`](./SWC-AUDIT-EN.md)

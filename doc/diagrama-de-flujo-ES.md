@@ -128,3 +128,5 @@ flowchart LR
     Dep[Depósito / amount in al pool] --> UP[Round UP — favorece pool]
     Ret[Retiro / amount out del pool] --> DOWN[Round DOWN — favorece pool]
 ```
+
+English version: [`diagrama-de-flujo-EN.md`](./diagrama-de-flujo-EN.md)

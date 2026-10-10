@@ -72,4 +72,6 @@ forge script script/Deploy.s.sol:Deploy --rpc-url http://127.0.0.1:8545 --broadc
 
 Env opcionales: `PRIVATE_KEY`, `FEE` (default 3000), `INIT_TICK` (default 0). Ver `script/Deploy.s.sol` y `.env.example`.
 
-README: [`../README.md`](../README.md) · Índice docs: [`README.md`](./README.md)
+README: [`../README-ES.md`](../README-ES.md) · Índice docs: [`README-ES.md`](./README-ES.md)
+
+English version: [`GAS-EN.md`](./GAS-EN.md)
