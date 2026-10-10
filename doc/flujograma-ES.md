@@ -177,5 +177,7 @@ flowchart LR
     F7 --> Done([Módulo v1 cerrado ✅])
 ```
 
-**Gate:** no avanzar de fase sin *“autorizo Fase N”*. Detalle en [`planificacion.md`](./planificacion.md).  
+**Gate:** no avanzar de fase sin *“autorizo Fase N”*. Detalle en [`planificacion-ES.md`](./planificacion-ES.md).  
 **Estado:** Fases **0–7** ✅ (módulo v1 cerrado).
+
+English version: [`flujograma-EN.md`](./flujograma-EN.md)

@@ -1,16 +1,20 @@
-# Documentación — Módulo 14: AMM v3 Concentrated Liquidity & Tick Math
+# Documentation / Documentación — Module 14: AMM v3 Concentrated Liquidity
 
-Índice de diseño y planificación del motor de liquidez concentrada (arquitectura Uniswap v3).
+Language index for the module documentation · Índice de idiomas de la documentación del módulo.
 
-| Archivo | Contenido |
-|---------|-----------|
-| [planificacion.md](./planificacion.md) | Fases de desarrollo, gates de autorización, alcance y criterios |
-| [diagrama-de-clases.md](./diagrama-de-clases.md) | Estructura de contratos, libs e interfaces |
-| [diagrama-de-flujo.md](./diagrama-de-flujo.md) | Flujos de decisión (mint, burn, swap, fees) |
-| [flujograma.md](./flujograma.md) | Flujos actor–sistema e2e |
-| [SWC-AUDIT.md](./SWC-AUDIT.md) | Matriz SWC-100–136 (Fase 7) |
-| [GAS.md](./GAS.md) | Baseline gas mint/swap/burn/collect |
+| Language | Index |
+|----------|-------|
+| 🇬🇧 English | [README-EN.md](./README-EN.md) |
+| 🇪🇸 Español | [README-ES.md](./README-ES.md) |
 
-**Regla:** cada fase de implementación requiere autorización explícita antes de escribir código.
+| Topic / Tema | English | Español |
+|--------------|---------|---------|
+| Planning / Planificación | [planificacion-EN.md](./planificacion-EN.md) | [planificacion-ES.md](./planificacion-ES.md) |
+| Class diagram / Diagrama de clases | [diagrama-de-clases-EN.md](./diagrama-de-clases-EN.md) | [diagrama-de-clases-ES.md](./diagrama-de-clases-ES.md) |
+| Flow diagram / Diagrama de flujo | [diagrama-de-flujo-EN.md](./diagrama-de-flujo-EN.md) | [diagrama-de-flujo-ES.md](./diagrama-de-flujo-ES.md) |
+| End-to-end flowchart / Flujograma | [flujograma-EN.md](./flujograma-EN.md) | [flujograma-ES.md](./flujograma-ES.md) |
+| Technical decisions / Decisiones técnicas | [decisiones-tecnicas-EN.md](./decisiones-tecnicas-EN.md) | [decisiones-tecnicas-ES.md](./decisiones-tecnicas-ES.md) |
+| Gas | [GAS-EN.md](./GAS-EN.md) | [GAS-ES.md](./GAS-ES.md) |
+| SWC audit / Auditoría SWC | [SWC-AUDIT-EN.md](./SWC-AUDIT-EN.md) | [SWC-AUDIT-ES.md](./SWC-AUDIT-ES.md) |
 
-**Estado actual:** Fases **0–7** ✅ (módulo v1 cerrado).
+Module README / README del módulo: [`../README.md`](../README.md)

@@ -57,13 +57,18 @@ Construir un motor de **AMM con liquidez concentrada** (arquitectura Uniswap v3)
 
 ```
 14-amm-v3-concentrated-liquidity/
-├── README.md
+├── README.md                         # Índice de idiomas (ES / EN)
+├── README-ES.md / README-EN.md
 ├── doc/
-│   ├── README.md
-│   ├── planificacion.md
-│   ├── diagrama-de-clases.md
-│   ├── diagrama-de-flujo.md
-│   └── flujograma.md
+│   ├── README.md                     # Índice de idiomas (ES / EN)
+│   ├── README-ES.md / README-EN.md
+│   ├── planificacion-ES.md / -EN.md
+│   ├── diagrama-de-clases-ES.md / -EN.md
+│   ├── diagrama-de-flujo-ES.md / -EN.md
+│   ├── flujograma-ES.md / -EN.md
+│   ├── decisiones-tecnicas-ES.md / -EN.md
+│   ├── GAS-ES.md / -EN.md
+│   └── SWC-AUDIT-ES.md / -EN.md
 ├── src/
 │   ├── CLPool.sol                    # Pool core: mint / burn / swap / collect
 │   ├── CLFactory.sol                 # Crea pools por token0/token1/fee
@@ -322,15 +327,15 @@ error TickNotSpaced();
 
 1. `script/Deploy.s.sol` (factory + pool demo + mocks).
 2. `test/gas/CLPool.gas.t.sol` + `.gas-snapshot`.
-3. NatSpec completo; `doc/SWC-AUDIT.md` y `doc/GAS.md`.
+3. NatSpec completo; `doc/SWC-AUDIT-ES.md` y `doc/GAS-ES.md`.
 
 **Criterio de salida:** deploy local reproducible + docs de seguridad/gas.
 
 **Hecho (2026-09-11):**
 - `script/Deploy.s.sol` — Factory + MockERC20 + pool + `initialize`.
 - `test/gas/CLPool.gas.t.sol` + `.gas-snapshot` (6 paths).
-- `doc/SWC-AUDIT.md` — matriz SWC-100–136, **0 vulnerables**, 4 informativos.
-- `doc/GAS.md` — baseline mint/swap/burn/poke/collect.
+- `doc/SWC-AUDIT-ES.md` — matriz SWC-100–136, **0 vulnerables**, 4 informativos.
+- `doc/GAS-ES.md` — baseline mint/swap/burn/poke/collect.
 - **`forge test` → 118 PASS**.
 
 ---
@@ -369,15 +374,18 @@ error TickNotSpaced();
 
 ## 10. Entregables de documentación (`doc/`)
 
+Cada documento existe en español (`-ES.md`) e inglés (`-EN.md`); `README.md` es el índice de idiomas.
+
 | Archivo | Contenido | Estado |
 |---------|-----------|--------|
-| `README.md` | Índice | ✅ |
-| `planificacion.md` | Este documento | ✅ |
-| `diagrama-de-clases.md` | Estructura y relaciones | ✅ |
-| `diagrama-de-flujo.md` | Flujos de decisión | ✅ |
-| `flujograma.md` | Flujos actor–sistema e2e | ✅ |
-| `SWC-AUDIT.md` | Matriz SWC (Fase 7) | ✅ |
-| `GAS.md` | Benchmarks (Fase 7) | ✅ |
+| `README-ES.md` | Índice | ✅ |
+| `planificacion-ES.md` | Este documento | ✅ |
+| `diagrama-de-clases-ES.md` | Estructura y relaciones | ✅ |
+| `diagrama-de-flujo-ES.md` | Flujos de decisión | ✅ |
+| `flujograma-ES.md` | Flujos actor–sistema e2e | ✅ |
+| `decisiones-tecnicas-ES.md` | Decisiones, lógica y mejoras de gas | ✅ |
+| `SWC-AUDIT-ES.md` | Matriz SWC (Fase 7) | ✅ |
+| `GAS-ES.md` | Benchmarks (Fase 7) | ✅ |
 
 ---
 
@@ -390,7 +398,7 @@ error TickNotSpaced();
 5. [x] Out-of-range → zero swap fees.
 6. [x] Fuzz MIN/MAX tick + precisión Q64.96.
 7. [x] Custom errors + NatSpec.
-8. [x] `doc/SWC-AUDIT.md` sin vulnerabilidades en alcance v1.
+8. [x] `doc/SWC-AUDIT-ES.md` sin vulnerabilidades en alcance v1.
 
 ---
 
@@ -399,3 +407,5 @@ error TickNotSpaced();
 **Módulo v1 cerrado.** Extensiones opcionales (v2): NFT Position Manager, TWAP, flash swaps, Ownable2Step en factory.
 
 **Nota:** usa `~/.foundry/bin/forge` (o antepón `$HOME/.foundry/bin` al `PATH`); el `forge` de nvm/npm no es Foundry.
+
+English version: [`planificacion-EN.md`](./planificacion-EN.md)

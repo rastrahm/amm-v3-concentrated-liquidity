@@ -197,3 +197,5 @@ classDiagram
 - `slot0` empaqueta `sqrtPriceX96`, `tick` y lock (`unlocked`) estilo Uniswap v3.
 - Flash swaps completos fuera de alcance; se reserva `FlashSlippage` por compatibilidad de errores del módulo.
 - TWAP / observations: post-v1.
+
+English version: [`diagrama-de-clases-EN.md`](./diagrama-de-clases-EN.md)
